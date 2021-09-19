@@ -19,12 +19,24 @@ class _GsgAnimationState extends State<GsgAnimation>
       duration: Duration(seconds: 3),
       vsync: this,
     );
+
     animation = Tween<double>(
       begin: 0,
       end: 2 * math.pi,
     ).animate(animationController)
       ..addListener(() {
         setState(() {});
+
+        //to show the animation status
+      })
+      ..addStatusListener((status) {
+        //completed: finished
+        //dismiss: return to 0
+        if (status == AnimationStatus.completed) {
+          animationController.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          animationController.forward();
+        }
       });
     animationController.forward();
   }
