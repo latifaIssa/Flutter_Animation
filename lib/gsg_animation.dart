@@ -19,11 +19,15 @@ class _GsgAnimationState extends State<GsgAnimation>
       duration: Duration(seconds: 3),
       vsync: this,
     );
-
+    final curvedAnimation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeIn,
+      reverseCurve: Curves.easeInCirc,
+    );
     animation = Tween<double>(
       begin: 0,
       end: 2 * math.pi,
-    ).animate(animationController)
+    ).chain(CurveTween(curve: Curves.bounceInOut)).animate(animationController)
       ..addListener(() {
         setState(() {});
 
