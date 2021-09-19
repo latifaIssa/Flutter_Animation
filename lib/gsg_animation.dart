@@ -48,8 +48,16 @@ class _GsgAnimationState extends State<GsgAnimation>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Transform.rotate(
-        angle: animation.value,
+      // body: Transform.rotate(
+      //   angle: animation.value,
+      //   child: Center(
+      //     child: Container(
+      //       child: FlutterLogo(),
+      //     ),
+      //   ),
+      // ),
+      body: Transform.scale(
+        scale: animation.value,
         child: Center(
           child: Container(
             child: FlutterLogo(),
