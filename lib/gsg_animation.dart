@@ -10,12 +10,15 @@ class GsgAnimation extends StatefulWidget {
 }
 
 class _GsgAnimationState extends State<GsgAnimation>
-    with SingleTickerProviderStateMixin {
+    // with SingleTickerProviderStateMixin {
+    with
+        TickerProviderStateMixin {
+  //for multiple controller
   AnimationController animationController;
-  // AnimationController animationController2;
+  AnimationController animationController2;
 
   Animation animation;
-  // Animation animation2;
+  Animation animation2;
   @override
   void initState() {
     super.initState();
@@ -55,9 +58,35 @@ class _GsgAnimationState extends State<GsgAnimation>
     )..repeat(reverse: true);
     animation = Tween<Offset>(
       begin: Offset.zero,
-      end: Offset(0, -1),
+      end: Offset(0, -0.5),
     ).animate(animationController);
     animationController.forward();
+
+    ///////for second animation controller //////////
+    animationController2 = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    animation2 = Tween<double>(
+      begin: 0,
+      end: 2 * math.pi,
+    ).chain(CurveTween(curve: Curves.bounceInOut)).animate(animationController2)
+      ..addListener(() {
+        setState(() {});
+
+        //to show the animation status
+      })
+      ..addStatusListener((status) {
+        //completed: finished
+        //dismiss: return to 0
+        if (status == AnimationStatus.completed) {
+          animationController2.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          animationController2.forward();
+        }
+      });
+    animationController2.forward();
   }
 
   @override
@@ -87,44 +116,52 @@ class _GsgAnimationState extends State<GsgAnimation>
       //     ),
       //   ),
       // ),
-      body: Column(
-        children: [
-          SlideTransition(
-            position: animation,
-            child: Center(
-              child: Container(
-                child: FlutterLogo(),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const SizedBox(width: 20.0, height: 100.0),
-              const Text(
-                'Be',
-                style: TextStyle(fontSize: 43.0),
-              ),
-              const SizedBox(width: 20.0, height: 100.0),
-              DefaultTextStyle(
-                style: const TextStyle(
-                  fontSize: 40.0,
-                  fontFamily: 'Horizon',
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SlideTransition(
+                position: animation,
+                child: Center(
+                  child: Container(
+                    child: FlutterLogo(
+                      size: 100,
+                    ),
+                  ),
                 ),
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    RotateAnimatedText('AWESOME'),
-                    RotateAnimatedText('OPTIMISTIC'),
-                    RotateAnimatedText('DIFFERENT'),
-                  ],
-                  onTap: () {
-                    print("Tap Event");
-                  },
-                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(width: 20.0, height: 100.0),
+                  const Text(
+                    'Be',
+                    style: TextStyle(fontSize: 43.0),
+                  ),
+                  const SizedBox(width: 20.0, height: 100.0),
+                  DefaultTextStyle(
+                    style: const TextStyle(
+                      fontSize: 40.0,
+                      fontFamily: 'Horizon',
+                      color: Colors.orange,
+                    ),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        RotateAnimatedText('AWESOME'),
+                        RotateAnimatedText('OPTIMISTIC'),
+                        RotateAnimatedText('DIFFERENT'),
+                      ],
+                      onTap: () {
+                        print("Tap Event");
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -132,7 +169,7 @@ class _GsgAnimationState extends State<GsgAnimation>
   @override
   void dispose() {
     animationController.dispose();
-    // animationController2.dispose();
+    animationController2.dispose();
     super.dispose();
   }
 }
